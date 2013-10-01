@@ -7,11 +7,21 @@ def make_chains(corpus):
     markov chains."""
     # text_list is the original text, in order, seperated into a list by word
     text_list = corpus.split()
-    tuple_list = []
     markov_chains = {}
 
-    for i in range(0, len(text_list) - 1):
-        tuple_list.append((text_list[i], text_list[i + 1]))
+    for i in range(0, len(text_list) - 2):
+        tuple_key = (text_list[i], text_list[i + 1])
+        value = text_list[i + 2]
+
+        if tuple_key not in markov_chains:
+            markov_chains[tuple_key] = [value]
+        else:
+            markov_chains[tuple_key].append(value)
+    
+    print markov_chains
+
+
+
 
     
 
@@ -33,6 +43,7 @@ def main():
     # Change this to read input_text from a file
     input_text = open(filename).read()
     make_chains(input_text)
+
 
     # chain_dict = make_chains(input_text)
     # random_text = make_text(chain_dict)
