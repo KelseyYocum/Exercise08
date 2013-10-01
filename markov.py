@@ -22,8 +22,12 @@ def make_chains(corpus):
     return markov_chains
 
 
-
-
+def acceptable_beginning (string):
+    # returns True if acceptable
+    word = string.strip("\"")
+    return ord(word[0]) in range(ord('A'), ord("Z") + 1)
+    
+        
 def make_text(chains):
     """Takes a dictionary of markov chains and returns random text
     based off an original text."""
@@ -33,12 +37,16 @@ def make_text(chains):
 
     #random start is a tuple key
     random_start = choice(chains.keys())
-
+    
+    while not acceptable_beginning(random_start[0]):
+        random_start = choice(chains.keys())
+    
     # list of words
     tweet_list = [random_start[0], random_start[1]]
 
     tweet = ''
     
+    # makes are random text
     while len(tweet) < length:
         next_word = choice(chains[(tweet_list[-2], tweet_list[-1])])
         
@@ -48,8 +56,6 @@ def make_text(chains):
         else:
             tweet_list.append(next_word) 
             tweet = " ".join(tweet_list)
-
-    print len(tweet)
 
     return tweet
 
