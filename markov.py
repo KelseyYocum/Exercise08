@@ -41,8 +41,15 @@ def make_text(chains):
     
     while len(tweet) < length:
         next_word = choice(chains[(tweet_list[-2], tweet_list[-1])])
-        tweet_list.append(next_word) 
-        tweet = " ".join(tweet_list)
+        
+        # the one is for the final space 
+        if len(next_word) + len(tweet) + 1 >= length:
+            break
+        else:
+            tweet_list.append(next_word) 
+            tweet = " ".join(tweet_list)
+
+    print len(tweet)
 
     return tweet
 
