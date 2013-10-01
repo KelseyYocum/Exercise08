@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from sys import argv
+from random import randint, choice
 
 def make_chains(corpus):
     """Takes an input text as a string and returns a dictionary of
@@ -18,23 +19,40 @@ def make_chains(corpus):
         else:
             markov_chains[tuple_key].append(value)
     
-    print markov_chains
-
-
-
-
-    
-
-
-
-
-
     return markov_chains
 
-# def make_text(chains):
-#     """Takes a dictionary of markov chains and returns random text
-#     based off an original text."""
-#     return "Here's some random text."
+
+
+
+def make_text(chains):
+    """Takes a dictionary of markov chains and returns random text
+    based off an original text."""
+
+    #length of output text in characters
+    length = 140
+
+    #random start is a tuple key
+    random_start = choice(chains.keys())
+
+    # list of words
+    tweet_list = [random_start[0], random_start[1]]
+
+    tweet = ''
+    
+    while len(tweet) < length:
+        next_word = choice(chains[(tweet_list[-2], tweet_list[-1])])
+        tweet_list.append(next_word) 
+        tweet = " ".join(tweet_list)
+
+    return tweet
+
+
+
+
+
+
+
+    return "Here's some random text."
 
 def main():
 
@@ -42,12 +60,9 @@ def main():
 
     # Change this to read input_text from a file
     input_text = open(filename).read()
-    make_chains(input_text)
-
-
-    # chain_dict = make_chains(input_text)
-    # random_text = make_text(chain_dict)
-#    print random_text
+    chain_dict = make_chains(input_text)
+    random_text = make_text(chain_dict)
+    print random_text
 
 # if __name__ == "__main__":
 #     main()
