@@ -46,12 +46,11 @@ def make_sentence(chains):
     # list of words
     word_list = [random_start[0], random_start[1]]
 
-    sentence = ''
-
     while not acceptable_ending(word_list[-1]):
         next_word = choice(chains[(word_list[-2], word_list[-1])])
         word_list.append(next_word)
-        sentence = " ".join(word_list)
+    
+    sentence = " ".join(word_list)
 
     return sentence
 
@@ -62,19 +61,19 @@ def make_text(chains):
     #length of desired output text in characters
     length = 140
     tweet = make_sentence(chains)
-    next_sentence = make_sentence(chains)
 
     while len(tweet) > length:
-        tweet= make_sentence(chains)
+        tweet = make_sentence(chains)
 
     if len(tweet) < length/3:
+        next_sentence = make_sentence(chains)
         while len(tweet) + len(next_sentence) + 1 > length:
             next_sentence = make_sentence(chains)
         tweet += " " + next_sentence
 
     print "------------------------------"
     print "length of tweet:", len(tweet)
-    print "length of next_sentence:",len(next_sentence)
+#    print "length of next_sentence:",len(next_sentence)
     print "------------------------------"
     return tweet
 
@@ -87,6 +86,7 @@ def main():
     # Change this to read input_text from a file
     input_text = open(filename).read()
     input_text = input_text.replace("\"",'')
+    input_text = input_text.replace("_",'')
     chain_dict = make_chains(input_text)
     random_text = make_text(chain_dict)
     print random_text
