@@ -8,7 +8,7 @@ def make_chains(corpus):
     """Takes an input text as a string and returns a dictionary of
     markov chains."""
     # text_list is the original text, in order, seperated into a list by word
-    text_list = corpus.split()
+    text_list = corpus.replace("\"", '').replace("_", '').split()
     markov_chains = {}
 
     for i in range(0, len(text_list) - 2):
@@ -71,13 +71,8 @@ def make_text(chains):
             next_sentence = make_sentence(chains)
         tweet += " " + next_sentence
 
-    print "------------------------------"
-    print "length of tweet:", len(tweet)
-#    print "length of next_sentence:",len(next_sentence)
-    print "------------------------------"
+    
     return tweet
-
-
 
 def main():
 
@@ -85,13 +80,10 @@ def main():
 
     # Change this to read input_text from a file
     input_text = open(filename).read()
-    input_text = input_text.replace("\"",'')
-    input_text = input_text.replace("_",'')
+ 
     chain_dict = make_chains(input_text)
     random_text = make_text(chain_dict)
     print random_text
-    print "*********************"
 
-# if __name__ == "__main__":
-#     main()
-main()
+if __name__ == "__main__":
+    main()
