@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from sys import argv
-from random import randint, choice
+from random import choice
+
 
 def make_chains(corpus):
     """Takes an input text as a string and returns a dictionary of
@@ -22,18 +23,19 @@ def make_chains(corpus):
     return markov_chains
 
 
-def acceptable_beginning (string):
+def acceptable_beginning(string):
     # returns True if acceptable
-    word = string.strip("\"")
-    return ord(word[0]) in range(ord('A'), ord("Z") + 1)
-    
-        
-def make_text(chains):
-    """Takes a dictionary of markov chains and returns random text
-    based off an original text."""
+    return ord(string[0]) in range(ord('A'), ord("Z") + 1)
 
-    #length of output text in characters
-    length = 140
+
+def acceptable_ending(string):
+    # returns True if acceptable
+    return string[-1] in ".?!"
+
+
+def make_sentence(chains):
+    """Takes a dictionary of markov chains and returns a random sentence
+    based off an original text."""
 
     #random start is a tuple key
     random_start = choice(chains.keys())
@@ -42,30 +44,41 @@ def make_text(chains):
         random_start = choice(chains.keys())
     
     # list of words
-    tweet_list = [random_start[0], random_start[1]]
+    word_list = [random_start[0], random_start[1]]
 
-    tweet = ''
-    
-    # makes are random text
-    while len(tweet) < length:
-        next_word = choice(chains[(tweet_list[-2], tweet_list[-1])])
+    sentence = ''
+
+    while not acceptable_ending(word_list[-1]):
+        next_word = choice(chains[(word_list[-2], word_list[-1])])
+        word_list.append(next_word)
+        sentence = " ".join(word_list)
+
+    return sentence
+
         
-        # the one is for the final space 
-        if len(next_word) + len(tweet) + 1 >= length:
-            break
-        else:
-            tweet_list.append(next_word) 
-            tweet = " ".join(tweet_list)
+def make_text(chains):
+    """Returns text in complete sentences based on original text"""
 
+    #length of desired output text in characters
+    length = 140
+    tweet = make_sentence(chains)
+    next_sentence = make_sentence(chains)
+
+    while len(tweet) > length:
+        tweet= make_sentence(chains)
+
+    if len(tweet) < length/3:
+        while len(tweet) + len(next_sentence) + 1 > length:
+            next_sentence = make_sentence(chains)
+        tweet += " " + next_sentence
+
+    print "------------------------------"
+    print "length of tweet:", len(tweet)
+    print "length of next_sentence:",len(next_sentence)
+    print "------------------------------"
     return tweet
 
 
-
-
-
-
-
-    return "Here's some random text."
 
 def main():
 
@@ -73,9 +86,11 @@ def main():
 
     # Change this to read input_text from a file
     input_text = open(filename).read()
+    input_text = input_text.replace("\"",'')
     chain_dict = make_chains(input_text)
     random_text = make_text(chain_dict)
     print random_text
+    print "*********************"
 
 # if __name__ == "__main__":
 #     main()
